@@ -21,7 +21,7 @@ function App() {
           style: {
             marginTop: "3rem",
             textTransform: "capitalize",
-            fontSize: "1.5rem",
+            fontSize: "1rem",
           },
         }}
       />

@@ -11,6 +11,10 @@ import User from "../models/User.js";
 export const createPost = asyncHandler(async (req, res) => {
   const { content, image } = req.body;
 
+  if (content === "" && image === "") {
+    res.status(400).json({ success: false, message: "Post cannot be empty" });
+  }
+
   const post = await Post.create({
     content,
     image: image ? image : null,
@@ -23,8 +27,7 @@ export const createPost = asyncHandler(async (req, res) => {
       .status(201)
       .json({ success: true, message: "Post created successfully" });
   } else {
-    res.status(500);
-    throw new Error("Internal server error");
+    res.status(400).json({ success: false, message: "Invalid post data" });
   }
 });
 
@@ -43,8 +46,7 @@ export const getPosts = asyncHandler(async (req, res) => {
   if (posts) {
     res.status(200).json({ success: true, posts });
   } else {
-    res.status(500);
-    throw new Error("Internal server error");
+    res.status(400).json({ success: false, message: "Internal server error" });
   }
 });
 
@@ -65,8 +67,7 @@ export const getPost = asyncHandler(async (req, res) => {
   if (post) {
     res.status(201).json(post);
   } else {
-    res.status(404);
-    throw new Error("Post not found");
+    res.status(400).json({ success: false, message: "Post not found" });
   }
 });
 
@@ -90,12 +91,12 @@ export const updatePost = asyncHandler(async (req, res) => {
           return res.status(404).json({ message: "Post not found" });
         });
     } else {
-      res.status(400);
-      throw new Error("Not authorized to edit the post");
+      res
+        .status(400)
+        .json({ success: false, message: "Not authorized to edit the post" });
     }
   } else {
-    res.status(404);
-    throw new Error("Post not found");
+    res.status(400).json({ success: false, message: "Post not found" });
   }
 });
 
@@ -114,12 +115,12 @@ export const deletePost = asyncHandler(async (req, res) => {
 
       res.json({ message: "Post deleted" });
     } else {
-      res.status(400);
-      throw new Error("Not authorized to edit the post");
+      res
+        .status(400)
+        .json({ success: false, message: "Not authorized to edit the post" });
     }
   } else {
-    res.status(404);
-    throw new Error("Post not found");
+    res.status(400).json({ success: false, message: "Post not found" });
   }
 });
 
@@ -145,8 +146,7 @@ export const likePost = asyncHandler(async (req, res) => {
       res.status(200).json({ likes: post.likes, userLiked: true });
     }
   } else {
-    res.status(404);
-    throw new Error("Post not found");
+    res.status(400).json({ success: false, message: "Post not found" });
   }
 });
 
@@ -175,7 +175,6 @@ export const addComment = asyncHandler(async (req, res) => {
     await post.save();
     res.status(201).json(post.comments);
   } else {
-    res.status(404);
-    throw new Error("Post not found");
+    res.status(400).json({ success: false, message: "Post not found" });
   }
 });

@@ -5,6 +5,7 @@ import { CommentDialog, Post } from "../components";
 
 const UserProfile = () => {
   const { getUserProfile, user } = useContext(AuthContext);
+  console.log(user);
 
   // get single user id from posts array
   const userId = user?.posts?.map((post) => post.userId);

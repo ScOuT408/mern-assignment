@@ -20,8 +20,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
+    res.status(400).json({ message: "User already exists" });
   }
 
   const user = await User.create({
@@ -32,15 +31,17 @@ export const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    res.status(201).json({
-      _id: user._id,
-      avatar: user.avatar,
-      name: user.name,
-      email: user.email,
-    });
+    res.status(201).json(
+      { message: "User created successfully" },
+      {
+        _id: user._id,
+        avatar: user.avatar,
+        name: user.name,
+        email: user.email,
+      }
+    );
   } else {
-    res.status(400);
-    throw new Error("Invalid user data");
+    res.status(400).json({ message: "Invalid user data" });
   }
 });
 
@@ -63,8 +64,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(password))) {
     sendToken(res, user, "User logged in successfully", 200);
   } else {
-    res.status(401);
-    throw new Error("Invalid email or password");
+    res.status(401).json({ message: "Invalid email or password" });
   }
 });
 
